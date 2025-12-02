@@ -1,8 +1,20 @@
+'''
+MÓDULO 3 - Trading Algorítmico con Python
+Código ACTUALIZADO (Diciembre 2025)
+
+Cambios aplicados:
+- Actualizados métodos deprecados de pandas: fillna(method=) reemplazado por ffill() y bfill()
+- Métodos de interpolación: incluye versión clásica pandas (polynomial, spline) con warnings
+  y versión moderna con scipy para compatibilidad con pandas >=2.0
+- yfinance: añadido multi_level_index=False para evitar MultiIndex en columnas
+- yfinance: añadido auto_adjust=True para evitar FutureWarning sobre cambio de default
+'''
+
 '''3.1.1'''
 # yfinance
 import yfinance as yf
 # Obtener datos históricos de Apple (AAPL)
-datos_apple = yf.download('AAPL', start='2023-01-01', end='2023-12-31')
+datos_apple = yf.download('AAPL', start='2023-01-01', end='2023-12-31', multi_level_index=False, auto_adjust=True)
 print(datos_apple.head())
 
 # Web Scraping
@@ -86,29 +98,44 @@ df = df.dropna(axis=1)
 ##Relleno de Valores Faltantes:
 
 # Rellenar con la media de cada columna
-df.fillna(df.mean(), inplace=True)
+df = df.fillna(df.mean())
 
 # Rellenar con el valor anterior (Forward Fill)
-df.fillna(method='ffill', inplace=True)
+df = df.ffill()
 
 # Rellenar con el valor siguiente (Backward Fill)
-df.fillna(method='bfill', inplace=True)
+df = df.bfill()
 
 
 
 ## Interpolación de Datos Faltantes:
 
 # Interpolación Lineal
-df.interpolate(method='linear', inplace=True)
+df = df.interpolate(method='linear')
 
-# Interpolación Polinómica
-df.interpolate(method='polynomial', order=2, inplace=True)
+# Interpolación Polinómica (puede generar warnings en pandas >= 2.0)
+df = df.interpolate(method='polynomial', order=2)
 
-# Interpolación Spline
-df.interpolate(method='spline', order=3, inplace=True)
+# Interpolación Spline (puede generar warnings en pandas >= 2.0)
+df = df.interpolate(method='spline', order=3)
 
 # Interpolación por Método de Aproximación de Valores Cercanos
-df.interpolate(method='nearest', inplace=True)
+df = df.interpolate(method='nearest')
+
+# Alternativa moderna: Interpolación avanzada con scipy (para pandas >= 2.0)
+from scipy.interpolate import UnivariateSpline, interp1d
+import numpy as np
+
+# Para interpolación polinómica con scipy
+x = np.arange(len(df))
+y = df['Precio'].values
+mask = ~np.isnan(y)
+f_poly = interp1d(x[mask], y[mask], kind='quadratic', fill_value='extrapolate')
+df['Precio_poly_scipy'] = f_poly(x)
+
+# Para interpolación spline con scipy
+f_spline = UnivariateSpline(x[mask], y[mask], k=3, s=0)
+df['Precio_spline_scipy'] = f_spline(x)
 
 # Ejemplo de Interpolación Lineal en una Serie Temporal
 import pandas as pd
@@ -126,7 +153,7 @@ print("Datos originales:")
 print(df)
 
 # Interpolación lineal
-df.interpolate(method='linear', inplace=True)
+df = df.interpolate(method='linear')
 
 # Mostrar datos interpolados
 print("\nDatos interpolados:")
@@ -156,7 +183,7 @@ import pandas as pd
 import yfinance as yf
 
 # Descargar del futuro del Nasdaq en Yahoo Finance
-df= yf.download('NQ=F', start='2020-01-01', end='2021-01-01')
+df= yf.download('NQ=F', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 scaler = MinMaxScaler()
 
@@ -254,7 +281,7 @@ import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df= yf.download('AAPL', start='2020-01-01', end='2021-01-01')
+df= yf.download('AAPL', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 # Histograma de la columna 'Close'
 plt.figure(figsize=(10, 6))

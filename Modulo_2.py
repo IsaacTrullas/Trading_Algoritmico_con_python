@@ -1,3 +1,7 @@
+'''
+MÓDULO 7 - Trading Algorítmico con Python
+'''
+
 ''' 2.1.1'''
 # Variables y Tipos de Datos:
 precio_accion = 150.50  # Esto es un número decimal

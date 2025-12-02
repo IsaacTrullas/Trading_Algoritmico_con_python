@@ -1,9 +1,17 @@
+'''
+MÓDULO 5 - Trading Algorítmico con Python
+Código ACTUALIZADO (Diciembre 2025)
+
+Cambios aplicados:
+- yfinance: añadido multi_level_index=False y auto_adjust=True en todas las llamadas
+'''
+
 # Look-Ahead Bias
 import yfinance as yf
 import pandas as pd
 
 # Descargar datos de un activo financiero
-df = yf.download('AAPL', start='2020-01-01', end='2023-01-01')
+df = yf.download('AAPL', start='2020-01-01', end='2023-01-01', multi_level_index=False, auto_adjust=True)
 
 # Supongamos que queremos basar nuestra estrategia en el precio de cierre del día anterior
 df['Close_Anterior'] = df['Close'].shift(1)  # Usamos el cierre del día anterior
@@ -17,13 +25,13 @@ import pandas as pd
 import numpy as np
 
 # Descargar datos históricos del futuro del Nasdaq
-df = yf.download('NQ=F', start='2015-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2015-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Crear una columna 'Returns' para los rendimientos diarios
 df['Returns'] = df['Close'].pct_change()
 
 # Eliminar los valores NaN que pueden surgir al calcular los rendimientos
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Dividir los datos en tres conjuntos: Desarrollo, Test y Validación
 # Aquí vamos a dividir el conjunto de datos en 60% Desarrollo, 20% Test y 20% Validación

@@ -1,3 +1,11 @@
+'''
+MÓDULO 4 - Trading Algorítmico con Python
+Código ACTUALIZADO (Diciembre 2025)
+
+Cambios aplicados:
+- yfinance: añadido multi_level_index=False y auto_adjust=True en todas las llamadas
+'''
+
 '''4.1'''
 # Media Móvil Simple (SMA):
 # Suponiendo que df es tu DataFrame con la columna 'Close'
@@ -26,7 +34,7 @@ import pandas as pd
 import talib as ta
 
 # Descargar del futuro del Nasdaq en Yahoo Finance
-df= yf.download('NQ=F', start='2020-01-01', end='2021-01-01')
+df= yf.download('NQ=F', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular el ADX
 df['ADX'] = ta.ADX(df['High'], df['Low'], df['Close'], timeperiod=14)
@@ -101,7 +109,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
 # Descargar datos del futuro del Nasdaq desde Yahoo Finance
-df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 # Crear la variable independiente (Días) y la dependiente (Cierre)
 df['Dias'] = (df.index - df.index[0]).days  # Crear columna 'Días' a partir de la fecha
@@ -138,7 +146,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, roc_auc_score
 
 # Descargar datos del futuro del Nasdaq desde Yahoo Finance
-df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 # Crear la variable dependiente (1 si el precio sube, 0 si baja)
 df['Sube'] = (df['Close'].shift(-1) > df['Close']).astype(int)
@@ -175,10 +183,10 @@ from statsmodels.tsa.arima.model import ARIMA
 import matplotlib.pyplot as plt
 
 # Descargar los datos
-df = yf.download('NQ=F', start='2020-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Convertir el índice a columna
-df.reset_index(inplace=True)
+df = df.reset_index()
 
 # Guardar las fechas en una columna separada
 dates = df['Date']
@@ -218,7 +226,7 @@ from arch import arch_model
 import matplotlib.pyplot as plt
 
 # Descargar los datos de Yahoo Finance
-df = yf.download('^NDX', start='2020-01-01', end='2024-01-01')
+df = yf.download('^NDX', start='2020-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular los retornos logarítmicos
 df['Returns'] = 100 * df['Close'].pct_change()
@@ -274,10 +282,10 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 import matplotlib.pyplot as plt
 
 # Descargar los datos del maíz
-df = yf.download('ZC=F', start='2015-01-01', end='2024-01-01')
+df = yf.download('ZC=F', start='2015-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Convertir el índice a columna
-df.reset_index(inplace=True)
+df = df.reset_index()
 
 # Guardar las fechas y el precio de cierre
 dates = df['Date']
@@ -315,13 +323,13 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, classification_report
 
 # Descargar los datos de precios del futuro del Nasdaq
-df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2021-01-01', multi_level_index=False, auto_adjust=True)
 
 # Crear una nueva columna 'Sube' que será nuestro target (1 si sube, 0 si baja)
 df['Sube'] = (df['Close'].shift(-1) > df['Close']).astype(int)
 
 # Limpiar datos eliminando NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Definir las variables independientes (usaremos solo el precio de cierre para este ejemplo)
 X = df[['Close']]
@@ -351,7 +359,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, classification_report
 
 # Descargar los datos de precios del futuro del Nasdaq
-df = yf.download('NQ=F', start='2020-01-01', end='2023-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2023-01-01', multi_level_index=False, auto_adjust=True) multi_level_index=False, auto_adjust=True)
 
 # Calcular indicadores técnicos adicionales
 df['SMA_10'] = ta.SMA(df['Close'], timeperiod=10)  # Media Móvil Simple de 10 días
@@ -360,7 +368,7 @@ df['SMA_10'] = ta.SMA(df['Close'], timeperiod=10)  # Media Móvil Simple de 10 d
 df['Sube'] = (df['Close'].shift(-1) > df['Close']).astype(int)
 
 # Limpiar datos eliminando NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Definir las variables independientes (indicadores técnicos y precio de cierre)
 X = df[['Close', 'SMA_10']]
@@ -412,7 +420,7 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.metrics import mean_squared_error, mean_absolute_error, mean_absolute_percentage_error
 
 # Descargar los datos del Nasdaq
-df = yf.download('NQ=F', start='2020-01-01', end='2023-01-01')
+df = yf.download('NQ=F', start='2020-01-01', end='2023-01-01', multi_level_index=False, auto_adjust=True)
 
 # Normalizar los datos usando MinMaxScaler
 scaler = MinMaxScaler(feature_range=(0,1))
@@ -445,7 +453,7 @@ model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(X_train, y_train, epochs=50, batch_size=32)
 
 # Hacer predicciones sobre nuevos datos
-df_test = yf.download('NQ=F', start='2023-01-02', end='2024-01-01')
+df_test = yf.download('NQ=F', start='2023-01-02', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 df_total = pd.concat((df['Close'], df_test['Close']), axis=0)
 inputs = df_total[len(df_total) - len(df_test) - window_size:].values
 inputs = inputs.reshape(-1,1)
@@ -503,7 +511,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Descargar los datos del índice S&P 500
-df = yf.download('^GSPC', start='2015-01-01', end='2023-01-01')
+df = yf.download('^GSPC', start='2015-01-01', end='2023-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular características adicionales
 df['Price Change'] = df['Close'].pct_change() * 100  #Cambio porcentual diario del precio
@@ -511,7 +519,7 @@ df['Volatility'] = df['High'] - df['Low']  #Rango de precios como medida de vola
 df['Volume'] = df['Volume']  # Volumen diario
 
 # Limpiar datos eliminando NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Seleccionar las características para el clustering
 X = df[['Price Change', 'Volatility', 'Volume']]
@@ -556,7 +564,7 @@ from sklearn.cluster import DBSCAN
 import matplotlib.pyplot as plt
 
 # Descargar datos de precios del S&P 500
-df = yf.download('^GSPC', start='2015-01-01', end='2024-01-01')
+df = yf.download('^GSPC', start='2015-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular el cambio porcentual diario
 df['Pct_Change'] = df['Close'].pct_change() * 100
@@ -565,7 +573,7 @@ df['Pct_Change'] = df['Close'].pct_change() * 100
 df['Volatility'] = df['High'] - df['Low']
 
 # Limpiar datos eliminando NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Normalizar los datos (DBSCAN es sensible a las escalas de los datos)
 scaler = StandardScaler()

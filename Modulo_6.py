@@ -1,10 +1,19 @@
+'''
+MÓDULO 6 - Trading Algorítmico con Python
+Código ACTUALIZADO (Diciembre 2025)
+
+Cambios aplicados:
+- Corregido error de sintaxis: f['Signal'] -> df['Signal'] y asignación correcta a df['Position']
+- yfinance: añadido multi_level_index=False y auto_adjust=True en todas las llamadas
+'''
+
 '''6.1.1'''
 # Ejemplo básico de reglas de entrada y salida
 import yfinance as yf
 import pandas as pd
 
 # Descargar los datos de un activo
-df = yf.download('AAPL', start='2021-01-01', end='2024-01-01')
+df = yf.download('AAPL', start='2021-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular medias móviles
 df['SMA_10'] = df['Close'].rolling(window=10).mean()
@@ -13,7 +22,7 @@ df['SMA_50'] = df['Close'].rolling(window=50).mean()
 # Definir las reglas de entrada y salida
 df['Signal'] = 0  # Inicializamos las señales a 0
 df['Signal'][df['SMA_10'] > df['SMA_50']] = 1  # Regla de entrada
-f['Signal'].diff() # Detectamos cambios en las señales para identificar entradas y salidas
+df['Position'] = df['Signal'].diff() # Detectamos cambios en las señales para identificar entradas y salidas
 
 # eliminamos NaNs
 df = df.dropna()
@@ -29,7 +38,7 @@ import talib as ta
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos del futuro del Nasdaq
-df = yf.download('NQ=F', start='2015-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2015-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular indicadores
 df['SMA_50'] = ta.SMA(df['Close'], timeperiod=50)
@@ -76,7 +85,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular medias móviles
 df['SMA_50'] = df['Close'].rolling(window=50).mean()
@@ -92,7 +101,7 @@ df['Position'] = df['Signal'].shift()  # Simular la ejecución al siguiente día
 df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()  # Retornos de la estrategia
 
 # Eliminar NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Graficar el rendimiento de la estrategia frente al activo
 (df['Strategy_Returns'] + 1).cumprod().plot(label='Strategy', figsize=(10,5))
@@ -107,8 +116,7 @@ import yfinance as yf
 
 # Descargar datos usando yfinance
 data = bt.feeds.PandasData(dataname=yf.download('AAPL', start='2020-01-01', 
-																								end='2024-01-01'))
-
+												end='2024-01-01', multi_level_index=False, auto_adjust=True))# Crear una clase de estrategia
 # Crear una clase de estrategia
 class SMACross(bt.Strategy):
     def __init__(self):
@@ -202,7 +210,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Calcular medias móviles
 df['SMA_50'] = df['Close'].rolling(window=50).mean()
@@ -229,7 +237,7 @@ df['Strategy_Returns'] = df['Position'] * df['Returns']
 df['Strategy_Returns'] -= (abs(df['Position'].diff()) * (commission + slippage))  
 
 # Eliminar NaNs
-df.dropna(inplace=True)
+df = df.dropna()
 
 # Calcular rendimiento total y anualizado
 total_return = (df['Strategy_Returns'] + 1).prod() - 1
@@ -305,7 +313,7 @@ df['Net_Strategy_Returns'] = df['Strategy_Returns'] - df['Transaction_Cost']
 
 # Falta de ajustes corporativos
 # Uso de datos ajustados para evitar errores en backtesting
-df = yf.download('AAPL', start='2015-01-01', end='2024-01-01', adjusted=True)
+df = yf.download('AAPL', start='2015-01-01', end='2024-01-01', adjusted=True, multi_level_index=False, auto_adjust=True)
 
 '''6.3.1'''
 # Ejemplo de ajuste de parámetros en Python
@@ -314,7 +322,7 @@ import pandas as pd
 import numpy as np
 
 # Descargar datos históricos
-df = yf.download('AAPL', start='2015-01-01', end='2024-01-01')
+df = yf.download('AAPL', start='2015-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Definir función para calcular el rendimiento de la estrategia
 def backtest_strategy(short_window, long_window):
@@ -353,7 +361,7 @@ from sklearn.model_selection import ParameterGrid
 import numpy as np
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Rango de valores para las medias móviles
 param_grid = {
@@ -372,7 +380,7 @@ def backtest_strategy(sma_1, sma_2):
 
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
-    df.dropna(inplace=True)
+    df = df.dropna()
     
     # Rendimiento total de la estrategia
     return (df['Strategy_Returns'] + 1).prod() - 1
@@ -402,7 +410,7 @@ from sklearn.model_selection import ParameterGrid
 import numpy as np
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Definimos los rangos de parámetros
 sma_1_range = np.arange(10, 100, 10)
@@ -419,7 +427,7 @@ def backtest_strategy(sma_1, sma_2):
 
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
-    df.dropna(inplace=True)
+    df = df.dropna()
     
     return (df['Strategy_Returns'] + 1).prod() - 1
 
@@ -448,7 +456,7 @@ from deap import base, creator, tools, algorithms
 import random
 
 # Descargar datos históricos
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Función de backtest para cada combinación de parámetros
 def backtest_strategy(sma_1, sma_2):
@@ -473,7 +481,7 @@ def backtest_strategy(sma_1, sma_2):
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
     
     # Eliminar NaNs
-    df.dropna(inplace=True)
+    df = df.dropna()
     
     # Rendimiento total de la estrategia
     return (df['Strategy_Returns'] + 1).prod() - 1
@@ -529,7 +537,7 @@ import random
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Función de backtest para cada combinación de parámetros
 def backtest_strategy(sma_1, sma_2):
@@ -544,7 +552,7 @@ def backtest_strategy(sma_1, sma_2):
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
 
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Rendimiento total de la estrategia
     return (df['Strategy_Returns'] + 1).prod() - 1
@@ -618,7 +626,7 @@ import numpy as np
 
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 def backtest_strategy(sma_1, sma_2):
     df['SMA_50'] = df['Close'].rolling(window=sma_1).mean()
@@ -630,7 +638,7 @@ def backtest_strategy(sma_1, sma_2):
 
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Calcular el ratio de Sharpe
     risk_free_rate = 0.01  # 1% tasa libre de riesgo
@@ -662,7 +670,7 @@ import numpy as np
 
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 def backtest_strategy(sma_1, sma_2):
     df['SMA_50'] = df['Close'].rolling(window=sma_1).mean()
@@ -674,7 +682,7 @@ def backtest_strategy(sma_1, sma_2):
 
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Calcular drawdown máximo
     df['Cumulative_Returns'] = (df['Strategy_Returns'] + 1).cumprod()
@@ -706,7 +714,7 @@ import pandas as pd
 import numpy as np
 
 # Descargar datos históricos
-df = yf.download('NQ=F', start='2000-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2000-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 def backtest_strategy(sma_1, sma_2):
     # Cálculo de SMAs
@@ -728,7 +736,7 @@ def backtest_strategy(sma_1, sma_2):
     
     # Retornos de la estrategia
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
-    df.dropna(inplace=True)  # Eliminar filas con NaN
+    df = df.dropna()  # Eliminar filas con NaN
     
     # Asegurarse de que hay suficientes datos
     if len(df) == 0:
@@ -781,7 +789,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos del futuro del Nasdaq
-df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # División de datos en entrenamiento (60%), test (20%) y validación (20%)
 train_size = int(len(df) * 0.6)
@@ -814,7 +822,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Separar los datos en entrenamiento (80%) y validación (20%)
 train_size = int(len(df_original) * 0.8)
@@ -834,7 +842,7 @@ def backtest_strategy(data, sma_1, sma_2):
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
 
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Retornar el DataFrame con los cálculos
     return df
@@ -890,7 +898,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Función de backtest para cada combinación de parámetros
 def backtest_strategy(data, sma_1, sma_2):
@@ -905,7 +913,7 @@ def backtest_strategy(data, sma_1, sma_2):
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
 
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Retornar el DataFrame con los cálculos
     return df
@@ -965,7 +973,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import gaussian_kde
 
 # Descargar datos históricos
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Función de backtest para la estrategia de medias móviles con cálculo de Sharpe
 def backtest_strategy(data, sma_1, sma_2):
@@ -980,7 +988,7 @@ def backtest_strategy(data, sma_1, sma_2):
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
 
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Calcular el rendimiento total
     total_return = (df['Strategy_Returns'] + 1).prod() - 1
@@ -1048,7 +1056,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Descargar datos históricos para el análisis de sensibilidad y robustez
-df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01')
+df_original = yf.download('NQ=F', start='2010-01-01', end='2024-01-01', multi_level_index=False, auto_adjust=True)
 
 # Función de backtest para la estrategia de medias móviles con cálculo de Sharpe y retorno total
 def backtest_strategy(data, sma_1, sma_2):
@@ -1063,7 +1071,7 @@ def backtest_strategy(data, sma_1, sma_2):
     df['Position'] = df['Signal'].shift()
     df['Strategy_Returns'] = df['Position'] * df['Close'].pct_change()
 
-    df.dropna(inplace=True)
+    df = df.dropna()
 
     # Calcular el rendimiento total
     total_return = (df['Strategy_Returns'] + 1).prod() - 1
@@ -1090,7 +1098,7 @@ periods = [
 # Evaluar la estrategia en diferentes periodos
 print("Evaluación de Robustez - Resultados en Diferentes Periodos de Tiempo")
 for start, end in periods:
-    df_period = yf.download('NQ=F', start=start, end=end)
+    df_period = yf.download('NQ=F', start=start, end=end, multi_level_index=False, auto_adjust=True)
     total_return, sharpe_ratio = backtest_strategy(df_period, base_sma_1, base_sma_2)
     print(f'Periodo {start} a {end} - Rendimiento Total: {total_return:.2%}, Sharpe Ratio: {sharpe_ratio:.2f}')
 
@@ -1098,7 +1106,7 @@ for start, end in periods:
 plt.figure(figsize=(12, 6))
 
 for start, end in periods:
-    df_period = yf.download('NQ=F', start=start, end=end)
+    df_period = yf.download('NQ=F', start=start, end=end, multi_level_index=False, auto_adjust=True)
     df_period_result = backtest_strategy(df_period, base_sma_1, base_sma_2)
     cumulative_returns = np.cumprod(df_period['Close'].pct_change() + 1)
     plt.plot(cumulative_returns, label=f'Periodo {start} a {end}')

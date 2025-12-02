@@ -1,3 +1,11 @@
+'''
+MÓDULO 7 - Trading Algorítmico con Python
+Código ACTUALIZADO (Diciembre 2025)
+
+Cambios aplicados:
+- Eliminado inplace=True en set_index() para seguir mejores prácticas de pandas moderno
+'''
+
 '''7.1.1'''
 # Iniciar la conexión con MetaTrader5
 import MetaTrader5 as mt5
@@ -67,7 +75,7 @@ def get_data(ticker, interval, start, end):
     data = mt5.copy_rates_range(ticker, interval, start, end)
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], unit='s')
-    data.set_index('time', inplace=True)
+    data = data.set_index('time')
     return data
 
 
@@ -91,7 +99,7 @@ def get_data(ticker, interval, start, end):
     data = mt5.copy_rates_range(ticker, interval, start, end)
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], unit='s')
-    data.set_index('time', inplace=True)
+    data = data.set_index('time')
     return data
 
 # Función que ejecuta la estrategia de trading
@@ -152,7 +160,7 @@ def get_data(ticker, interval, start, end):
     data = mt5.copy_rates_range(ticker, interval, start, end)
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], unit='s')
-    data.set_index('time', inplace=True)
+    data = data.set_index('time')
     return data
 
 # Función que genera la señal de compra o venta
@@ -286,7 +294,7 @@ def get_data(ticker, interval, start, end):
     data = mt5.copy_rates_range(ticker, interval, start, end)
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], unit='s')
-    data.set_index('time', inplace=True)
+    data = data.set_index('time')
     return data
 
 # Función que genera la señal de compra o venta
@@ -503,7 +511,7 @@ def get_data(ticker, interval, start, end):
     data = mt5.copy_rates_range(ticker, interval, start, end)
     data = pd.DataFrame(data)
     data['time'] = pd.to_datetime(data['time'], unit='s')
-    data.set_index('time', inplace=True)
+    data = data.set_index('time')
     return data
 
 # Función que genera la señal de compra o venta
